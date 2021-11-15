@@ -1,36 +1,41 @@
-import React from "react";
+import React from 'react';
+import {filterType} from './App';
 
-type propsType={
-    title: string
-    tasks: Array<propsTasks>
-}
-
-type propsTasks={
+type TaskType = {
     id: number
     title: string
     isDone: boolean
 }
 
-export const TodoList =(props:propsType)=> {
-    return (
-        <div>
-            <h3>{props.title}</h3>
-            <div>
-                <input/>
-                <button>+</button>
-            </div>
-            <ul>
-                <li><input type="checkbox" checked={props.tasks[0].isDone}/> <span>{props.tasks[0].title}</span></li>
-                <li><input type="checkbox" checked={props.tasks[1].isDone}/> <span>{props.tasks[1].title}</span></li>
-                <li><input type="checkbox" checked={props.tasks[2].isDone}/> <span>{props.tasks[2].title}</span></li>
-
-            </ul>
-            <div>
-                <button>All</button>
-                <button>Active</button>
-                <button>Completed</button>
-            </div>
-        </div>
-    )
+type PropsType = {
+    title: string
+    tasks: Array<TaskType>
+    removeTask:(mId:number)=>void
+    setFilter:(value: filterType) =>void
 }
 
+export function Todolist(props: PropsType) {
+    return <div>
+        <h3>{props.title}</h3>
+        <div>
+            <input/>
+            <button>+</button>
+        </div>
+        <ul>
+            {props.tasks.map(m => {
+                    return (
+                        <li key={m.id}>
+                            <button onClick={()=> props.removeTask(m.id)}>X</button>
+                            <input type="checkbox" checked={m.isDone}/>
+                            <span>{m.title}</span></li>
+                    )
+                }
+            )}
+        </ul>
+        <div>
+            <button onClick={()=> props.setFilter('All')}>All</button>
+            <button onClick={()=> props.setFilter('Active')}>Active</button>
+            <button onClick={()=> props.setFilter('Completed')}>Completed</button>
+        </div>
+    </div>
+}
