@@ -6,10 +6,10 @@ import {AddItemForm} from './AddItemForm';
 import {AppBar, Button, Container, Grid, IconButton, Paper, Toolbar, Typography} from '@material-ui/core';
 import {Menu} from '@material-ui/icons';
 import {
-    addTodolistAC,
-    changeTodolistFilterAC,
-    changeTodolistTitleAC,
-    removeTodolistAC,
+    AddTodolistAC,
+    ChangeTodolistFilterAC,
+    ChangeTodolistTitleAC,
+    RemoveTodolistAC,
     todolistsReducer
 } from './state/todolists-reducer';
 import {addTaskAC, changeTaskStatusAC, changeTaskTitleAC, removeTaskAC, tasksReducer} from './state/tasks-reducer';
@@ -26,16 +26,16 @@ export type TasksStateType = {
 }
 
 
-function AppWithReducer() {
+function AppWithReducers() {
     let todolistId1 = v1();
     let todolistId2 = v1();
 
-    let [todolists, dispatchToTodolistReducer] = useReducer(todolistsReducer,[
+    let [todolists, dispatchToTodolist] = useReducer(todolistsReducer,[
         {id: todolistId1, title: "What to learn", filter: "all"},
         {id: todolistId2, title: "What to buy", filter: "all"}
     ])
 
-    let [tasks, dispatchToTasksReducer] = useReducer(tasksReducer,{
+    let [tasks, dispatchToTasks] = useReducer(tasksReducer,{
         [todolistId1]: [
             {id: v1(), title: "HTML&CSS", isDone: true},
             {id: v1(), title: "JS", isDone: true}
@@ -48,33 +48,34 @@ function AppWithReducer() {
 
 
     function removeTask(id: string, todolistId: string) {
-        dispatchToTasksReducer(removeTaskAC(id,todolistId))
+        let action = removeTaskAC(id,todolistId)
+        dispatchToTasks(action)
     }
     function addTask(title: string, todolistId: string) {
-        dispatchToTasksReducer(addTaskAC(title,todolistId))
+        dispatchToTasks(addTaskAC(title,todolistId))
     }
     function changeStatus(id: string, isDone: boolean, todolistId: string) {
-        dispatchToTasksReducer(changeTaskStatusAC(id,isDone,todolistId))
-    }
+            dispatchToTasks(changeTaskStatusAC(id,isDone,todolistId))
+        }
     function changeTaskTitle(id: string, newTitle: string, todolistId: string) {
-        dispatchToTasksReducer(changeTaskTitleAC(id,newTitle,todolistId))
+        dispatchToTasks(changeTaskTitleAC(id,newTitle,todolistId))
     }
 
     function changeFilter(value: FilterValuesType, todolistId: string) {
-        dispatchToTodolistReducer(changeTodolistFilterAC(value,todolistId))
+        dispatchToTodolist(ChangeTodolistFilterAC(todolistId,value))
     }
     function removeTodolist(id: string) {
-        const action = removeTodolistAC(id)
-        dispatchToTasksReducer(action)
-        dispatchToTodolistReducer(action)
+        let action = RemoveTodolistAC(id)
+        dispatchToTodolist(action)
+        dispatchToTasks(action)
     }
     function changeTodolistTitle(id: string, title: string) {
-        dispatchToTodolistReducer(changeTodolistTitleAC(id,title))
+        dispatchToTodolist(ChangeTodolistTitleAC(id,title))
     }
     function addTodolist(title: string) {
-        const action = addTodolistAC(title)
-        dispatchToTasksReducer(action)
-        dispatchToTodolistReducer(action)
+        let action = AddTodolistAC(title)
+        dispatchToTodolist(action)
+        dispatchToTasks(action)
     }
 
     return (
@@ -101,10 +102,10 @@ function AppWithReducer() {
                             let tasksForTodolist = allTodolistTasks;
 
                             if (tl.filter === "active") {
-                                tasksForTodolist = allTodolistTasks.filter(t => t.isDone === false);
+                                tasksForTodolist = allTodolistTasks.filter(t => !t.isDone);
                             }
                             if (tl.filter === "completed") {
-                                tasksForTodolist = allTodolistTasks.filter(t => t.isDone === true);
+                                tasksForTodolist = allTodolistTasks.filter(t => t.isDone);
                             }
 
                             return <Grid item>
@@ -133,4 +134,4 @@ function AppWithReducer() {
     );
 }
 
-export default AppWithReducer;
+export default AppWithReducers;
