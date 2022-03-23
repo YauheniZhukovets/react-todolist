@@ -3,6 +3,9 @@ import {TaskPriorities, TaskStatuses, TaskType, todolistsAPI, UpdateTaskModelTyp
 import {Dispatch} from 'redux'
 import {AppRootStateType} from '../../app/store'
 import {AppActionsType, setAppErrorAC, setAppStatusAC} from '../../app/app-reducer';
+import {AxiosError} from 'axios';
+import {ResponseStatuses} from '../../utils/enum/ResponseStatuses';
+import {handleServerAppError, handleServerNetworkError} from '../../utils/error/error-utils';
 
 const initialState: TasksStateType = {}
 
@@ -62,24 +65,27 @@ export const fetchTasksTC = (todolistId: string) => (dispatch: Dispatch<ActionsT
 export const removeTaskTC = (taskId: string, todolistId: string) => (dispatch: Dispatch<ActionsType>) => {
     dispatch(setAppStatusAC('loading'))
     todolistsAPI.deleteTask(todolistId, taskId)
-        .then(res => {
+        .then(() => {
             const action = removeTaskAC(taskId, todolistId)
             dispatch(action)
             dispatch(setAppStatusAC('succeeded'))
         })
 }
+
+
 export const addTaskTC = (title: string, todolistId: string) => (dispatch: Dispatch<ActionsType>) => {
     dispatch(setAppStatusAC('loading'))
     todolistsAPI.createTask(todolistId, title)
         .then(res => {
-            if (res.data.resultCode === 0) {
+            if (res.data.resultCode === ResponseStatuses.success) {
                 dispatch(addTaskAC(res.data.data.item))
                 dispatch(setAppStatusAC('succeeded'))
             } else {
-                dispatch(setAppErrorAC(res.data.messages[0]));
-                dispatch(setAppStatusAC('failed'))
+                handleServerAppError<{ item: TaskType }>(dispatch, res.data)
             }
-
+        })
+        .catch((error: AxiosError) => {
+            handleServerNetworkError(dispatch, error.message)
         })
 }
 export const updateTaskTC = (taskId: string, domainModel: UpdateDomainTaskModelType, todolistId: string) =>
@@ -103,10 +109,14 @@ export const updateTaskTC = (taskId: string, domainModel: UpdateDomainTaskModelT
             ...domainModel
         }
         todolistsAPI.updateTask(todolistId, taskId, apiModel)
-            .then(res => {
+            .then(() => {
                 const action = updateTaskAC(taskId, domainModel, todolistId)
                 dispatch(action)
                 dispatch(setAppStatusAC('succeeded'))
+            })
+            .catch((error: AxiosError) => {
+                dispatch(setAppErrorAC(error.message))
+                dispatch(setAppStatusAC('failed'))
             })
     }
 
