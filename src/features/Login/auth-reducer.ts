@@ -1,8 +1,8 @@
 import {setAppStatusAC} from '../../app/app-reducer'
 import {authAPI, LoginParamsType} from '../../api/todolists-api'
 import {handleServerAppError, handleServerNetworkError} from '../../utils/error-utils'
-import {AppThunkType} from '../../app/store';
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {Dispatch} from 'redux';
 
 const initialState: InitialStateType = {
     isLoggedIn: false
@@ -22,7 +22,7 @@ export const authReducer = slice.reducer
 export const {setIsLoggedInAC} = slice.actions
 
 // thunks
-export const loginTC = (data: LoginParamsType): AppThunkType => (dispatch) => {
+export const loginTC = (data: LoginParamsType) => (dispatch: Dispatch) => {
     dispatch(setAppStatusAC({status: 'loading'}))
     authAPI.login(data)
         .then(res => {
@@ -38,7 +38,7 @@ export const loginTC = (data: LoginParamsType): AppThunkType => (dispatch) => {
         })
 }
 
-export const logoutTC = (): AppThunkType => (dispatch) => {
+export const logoutTC = () => (dispatch: Dispatch) => {
     dispatch(setAppStatusAC({status: 'loading'}))
     authAPI.logout()
         .then(res => {
@@ -58,5 +58,5 @@ export const logoutTC = (): AppThunkType => (dispatch) => {
 export type InitialStateType = {
     isLoggedIn: boolean
 }
-export type ActionsAuthType = ReturnType<typeof setIsLoggedInAC>
+
 

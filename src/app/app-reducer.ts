@@ -1,7 +1,7 @@
 import {authAPI} from '../api/todolists-api'
 import {setIsLoggedInAC} from '../features/Login/auth-reducer'
-import {AppThunkType} from './store';
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {Dispatch} from 'redux';
 
 const initialState: InitialStateType = {
     status: 'idle',
@@ -39,7 +39,7 @@ export type InitialStateType = {
     isInitialized: boolean
 }
 
-export const initializeAppTC = (): AppThunkType => (dispatch) => {
+export const initializeAppTC = () => (dispatch: Dispatch) => {
     authAPI.me().then(res => {
         if (res.data.resultCode === 0) {
             dispatch(setIsLoggedInAC({value: true}));
@@ -49,11 +49,4 @@ export const initializeAppTC = (): AppThunkType => (dispatch) => {
     })
 }
 
-export type SetAppErrorActionType = ReturnType<typeof setAppErrorAC>
-export type SetAppStatusActionType = ReturnType<typeof setAppStatusAC>
 
-
-export type ActionsAppType =
-    | SetAppErrorActionType
-    | SetAppStatusActionType
-    | ReturnType<typeof setAppInitializedAC>
