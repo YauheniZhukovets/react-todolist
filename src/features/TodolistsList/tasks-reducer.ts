@@ -36,7 +36,7 @@ const slice = createSlice({
     extraReducers: (builder) => {
         builder
             .addCase(addTodolistAC, (state, action) => {
-                state[action.payload.todolist.id] = []
+                state[action.payload.id] = []
             })
             .addCase(removeTodolistAC, (state, action) => {
                 delete state[action.payload.id]

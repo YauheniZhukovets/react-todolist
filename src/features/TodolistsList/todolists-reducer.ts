@@ -16,8 +16,8 @@ const slice = createSlice({
                 state.splice(index, 1)
             }
         },
-        addTodolistAC: (state, action: PayloadAction<{ todolist: TodolistType }>) => {
-            state.unshift({...action.payload.todolist, filter: 'all', entityStatus: 'idle'})
+        addTodolistAC: (state, action: PayloadAction<TodolistType>) => {
+            state.unshift({...action.payload, filter: 'all', entityStatus: 'idle'})
         },
         changeTodolistTitleAC: (state, action: PayloadAction<{ id: string, title: string }>) => {
             const index = state.findIndex(tl => tl.id === action.payload.id)
@@ -88,7 +88,7 @@ export const addTodolistTC = (title: string) => {
         dispatch(setAppStatusAC({status: 'loading'}))
         todolistsAPI.createTodolist(title)
             .then((res) => {
-                dispatch(addTodolistAC({todolist: res.data.data.item}))
+                dispatch(addTodolistAC(res.data.data.item))
                 dispatch(setAppStatusAC({status: 'succeeded'}))
             })
     }
