@@ -1,6 +1,6 @@
 {
   "homepage": "https://YauheniZhukovets.github.io/react-todolist",
-  "name": "it-incubator-todolist-ts",
+  "name": "react-todolist",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
