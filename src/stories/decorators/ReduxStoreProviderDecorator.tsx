@@ -7,12 +7,12 @@ import {v1} from 'uuid'
 import {TaskPriorities, TaskStatuses} from '../../api/todolists-api'
 import {appReducer} from '../../app/app-reducer'
 import thunkMiddleware from 'redux-thunk'
-import {authReducer} from '../../features/Login/auth-reducer';
+import {authReducer} from '../../features/Auth/auth-reducer';
 import {configureStore} from '@reduxjs/toolkit';
-import {AppRootStateType, RootReducerType} from '../../app/store';
 import {HashRouter} from 'react-router-dom';
+import {AppRootStateType} from '../../app/store';
 
-const rootReducer: RootReducerType = combineReducers({
+const rootReducer = combineReducers({
     tasks: tasksReducer,
     todolists: todolistsReducer,
     app: appReducer,

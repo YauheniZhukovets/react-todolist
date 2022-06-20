@@ -16,6 +16,7 @@ import {Grid, Paper} from '@material-ui/core'
 import {AddItemForm} from '../../components/AddItemForm/AddItemForm'
 import {Todolist} from './Todolist/Todolist'
 import {Redirect} from 'react-router-dom'
+import {selectIsLoggedIn} from '../Auth/selectors';
 
 type PropsType = {
     demo?: boolean
@@ -24,7 +25,7 @@ type PropsType = {
 export const TodolistsList: React.FC<PropsType> = ({demo = false}) => {
     const todolists = useSelector<AppRootStateType, Array<TodolistDomainType>>(state => state.todolists)
     const tasks = useSelector<AppRootStateType, TasksStateType>(state => state.tasks)
-    const isLoggedIn = useSelector<AppRootStateType, boolean>(state => state.auth.isLoggedIn)
+    const isLoggedIn = useSelector(selectIsLoggedIn)
 
     const dispatch = useDispatch()
 
@@ -47,12 +48,12 @@ export const TodolistsList: React.FC<PropsType> = ({demo = false}) => {
     }, [dispatch])
 
     const changeStatus = useCallback(function (id: string, status: TaskStatuses, todolistId: string) {
-        const thunk = updateTaskTC({taskId: id, model:{status},todolistId:todolistId})
+        const thunk = updateTaskTC({taskId: id, model: {status}, todolistId: todolistId})
         dispatch(thunk)
     }, [dispatch])
 
     const changeTaskTitle = useCallback(function (id: string, newTitle: string, todolistId: string) {
-        const thunk = updateTaskTC({taskId:id, model:{title: newTitle}, todolistId:todolistId})
+        const thunk = updateTaskTC({taskId: id, model: {title: newTitle}, todolistId: todolistId})
         dispatch(thunk)
     }, [dispatch])
 
