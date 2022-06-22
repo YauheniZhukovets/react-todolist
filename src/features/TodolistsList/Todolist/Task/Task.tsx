@@ -13,10 +13,8 @@ type TaskPropsType = {
 export const Task = React.memo((props: TaskPropsType) => {
     const {removeTaskTC, updateTaskTC} = useActions(tasksActions)
 
-    const onClickHandler = useCallback(() => removeTaskTC({
-        taskId: props.task.id,
-        todolistId: props.todolistId
-    }),[props.task.id, props.todolistId, removeTaskTC]);
+    const onClickHandler = useCallback(() => removeTaskTC({taskId: props.task.id, todolistId: props.todolistId}),
+        [props.task.id, props.todolistId, removeTaskTC]);
 
     const onChangeHandler = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         updateTaskTC({
@@ -30,7 +28,8 @@ export const Task = React.memo((props: TaskPropsType) => {
         updateTaskTC({taskId: props.task.id, model: {title: newValue}, todolistId: props.todolistId})
     }, [props.task.id, props.todolistId, updateTaskTC]);
 
-    return <div key={props.task.id} className={props.task.status === TaskStatuses.Completed ? 'is-done' : ''}>
+    return <div style={{position: 'relative'}} key={props.task.id}
+                className={props.task.status === TaskStatuses.Completed ? 'is-done' : ''}>
         <Checkbox
             checked={props.task.status === TaskStatuses.Completed}
             color="primary"
@@ -38,8 +37,8 @@ export const Task = React.memo((props: TaskPropsType) => {
         />
 
         <EditableSpan value={props.task.title} onChange={onTitleChangeHandler}/>
-        <IconButton onClick={onClickHandler}>
-            <Delete/>
+        <IconButton  size={'small'} onClick={onClickHandler} style={{position: 'absolute', top: '5px', right: '5px'}}>
+            <Delete fontSize={'small'}/>
         </IconButton>
     </div>
 })

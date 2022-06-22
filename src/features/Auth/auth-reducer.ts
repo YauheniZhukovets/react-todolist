@@ -4,7 +4,7 @@ import {handleServerAppError, handleServerNetworkError} from '../../utils/error-
 import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {AxiosError} from 'axios';
 
-const slice = createSlice({
+export const slice = createSlice({
     name: 'auth',
     initialState: {
         isLoggedIn: false
@@ -64,5 +64,5 @@ export const logoutTC = createAsyncThunk('auth/logout', async (arg, {dispatch, r
     }
 })
 
-
+export const asyncActions = {loginTC, logoutTC}
 

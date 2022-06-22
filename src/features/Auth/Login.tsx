@@ -1,10 +1,10 @@
 import React from 'react'
 import {Button, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Grid, TextField} from '@material-ui/core'
 import {FormikHelpers, useFormik} from 'formik'
-import {loginTC} from './auth-reducer'
 import {useAppDispatch, useAppSelector} from '../../app/store'
 import {Redirect} from 'react-router-dom'
 import {selectIsLoggedIn} from './selectors';
+import {authActions} from './index';
 
 type FormValuesType = {
     email: string
@@ -14,6 +14,7 @@ type FormValuesType = {
 
 export const Login = () => {
     const dispatch = useAppDispatch()
+
     const isLoggedIn = useAppSelector(selectIsLoggedIn);
 
     const formik = useFormik({
@@ -36,9 +37,9 @@ export const Login = () => {
             rememberMe: false
         },
         onSubmit: async (values: FormValuesType, formikHelpers: FormikHelpers<FormValuesType>) => {
-            const action = await dispatch(loginTC(values));
+            const action = await dispatch(authActions.loginTC(values));
 
-            if (loginTC.rejected.match(action)) {
+            if (authActions.loginTC.rejected.match(action)) {
                 if (action.payload?.fieldsError?.length) {
                     const error = action.payload.fieldsError[0]
                     formikHelpers.setFieldError(error.field, error.error)
@@ -59,7 +60,7 @@ export const Login = () => {
                     <FormLabel>
                         <p>
                             To log in get registered <a href={'https://social-network.samuraijs.com/'}
-                                                        target={'_blank'}>here</a>
+                                                        target={'_blank'} rel="noopener noreferrer">here</a>
                         </p>
                         <p>
                             or use common test account credentials:

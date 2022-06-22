@@ -11,13 +11,12 @@ import {
     Typography
 } from '@material-ui/core'
 import {Menu} from '@material-ui/icons'
-import {TodolistsList} from '../features/TodolistsList/TodolistsList'
+import {TodolistsList} from '../features/TodolistsList/'
 import {ErrorSnackbar} from '../components/ErrorSnackbar/ErrorSnackbar'
-import {initializeAppTC} from './app-reducer'
+import {asyncActions} from './app-reducer'
 import {Route} from 'react-router-dom'
-import {Login} from '../features/Auth/Login'
 import {logoutTC} from '../features/Auth/auth-reducer'
-import {authSelectors} from '../features/Auth';
+import {authSelectors, Login} from '../features/Auth';
 import {selectIsInitialized, selectStatus} from './selectors';
 import {useAppDispatch, useAppSelector} from './store';
 
@@ -33,13 +32,13 @@ function App({demo = false}: PropsType) {
 
     useEffect(() => {
         if (!demo) {
-            dispatch(initializeAppTC())
+            dispatch(asyncActions.initializeAppTC())
         }
-    }, [])
+    }, [demo, dispatch])
 
     const logoutHandler = useCallback(() => {
         dispatch(logoutTC())
-    }, [])
+    }, [dispatch])
 
     if (!isInitialized) {
         return <div
