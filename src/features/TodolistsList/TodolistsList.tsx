@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect} from 'react'
-import {useActions, useAppSelector} from '../../app/store'
+import {useActions, useAppDispatch, useAppSelector} from '../../app/store'
 import {Grid} from '@material-ui/core'
-import {AddItemForm} from '../../components/AddItemForm/AddItemForm'
+import {AddItemForm, AddItemFormSubmitHelpersType} from '../../components/AddItemForm/AddItemForm'
 import {Todolist} from './Todolist/Todolist'
 import {Redirect} from 'react-router-dom'
 import {selectIsLoggedIn} from '../Auth/selectors';
@@ -18,7 +18,8 @@ export const TodolistsList: React.FC<PropsType> = ({demo = false}) => {
     const todolists = useAppSelector(selectTodolists)
     const tasks = useAppSelector(selectTasks)
     const isLoggedIn = useAppSelector(selectIsLoggedIn)
-    const {addTodolistTC, fetchTodolistsTC} = useActions(todolistsActions)
+    const {fetchTodolistsTC} = useActions(todolistsActions)
+    const dispatch = useAppDispatch()
 
     useEffect(() => {
         if (demo || !isLoggedIn) {
@@ -28,9 +29,21 @@ export const TodolistsList: React.FC<PropsType> = ({demo = false}) => {
     }, [demo, fetchTodolistsTC, isLoggedIn])
 
 
-    const addTodolist = useCallback((title: string) => {
-        addTodolistTC(title)
-    }, [addTodolistTC])
+    const addTodolist = useCallback(async (title: string, helper: AddItemFormSubmitHelpersType) => {
+        let thunk = todolistsActions.addTodolistTC(title)
+        const resultAction = await dispatch(thunk)
+
+        if (todolistsActions.addTodolistTC.rejected.match(resultAction)) {
+            if (resultAction.payload?.errors?.length) {
+                const errorMessage = resultAction.payload?.errors[0]
+                helper.setError(errorMessage)
+            } else {
+                helper.setError('Some error occured')
+            }
+        } else {
+            helper.setTitle('')
+        }
+    }, [dispatch])
 
     if (!isLoggedIn) {
         return <Redirect to={'/login'}/>

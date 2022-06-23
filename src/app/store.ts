@@ -6,6 +6,7 @@ import {ActionCreatorsMapObject, configureStore} from '@reduxjs/toolkit';
 import {TypedUseSelectorHook, useDispatch, useSelector} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {useMemo} from 'react';
+import {FieldErrorType} from '../api/todolists-api';
 
 export const store = configureStore({
     reducer: {
@@ -18,6 +19,7 @@ export const store = configureStore({
 
 export type AppDispatch = typeof store.dispatch
 export type AppRootStateType = ReturnType<typeof store.getState>
+export type ThunkError = { rejectValue: { errors: Array<string>, fieldsError?: Array<FieldErrorType> } }
 
 //hooks
 export const useAppDispatch = () => useDispatch<AppDispatch>()
@@ -25,11 +27,10 @@ export const useAppSelector: TypedUseSelectorHook<AppRootStateType> = useSelecto
 export const useActions = <T extends ActionCreatorsMapObject<any>>(actions: T) => {
     const dispatch = useDispatch()
 
-    const boundActions = useMemo(() => {
+    return useMemo(() => {
         return bindActionCreators(actions, dispatch)
 
     }, [actions, dispatch])
-    return boundActions
 }
 
 // а это, чтобы можно было в консоли браузера обращаться к store в любой момент

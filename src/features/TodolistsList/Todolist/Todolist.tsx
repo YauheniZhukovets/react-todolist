@@ -1,12 +1,12 @@
 import React, {useCallback, useEffect} from 'react'
-import {AddItemForm} from '../../../components/AddItemForm/AddItemForm'
+import {AddItemForm, AddItemFormSubmitHelpersType} from '../../../components/AddItemForm/AddItemForm'
 import {EditableSpan} from '../../../components/EditableSpan/EditableSpan'
 import {Button, IconButton, Paper, PropTypes} from '@material-ui/core'
 import {Delete} from '@material-ui/icons'
 import {Task} from './Task/Task'
 import {TaskStatuses, TaskType} from '../../../api/todolists-api'
 import {FilterValuesType, TodolistDomainType} from '../todolists-reducer'
-import {useActions} from '../../../app/store';
+import {useActions, useAppDispatch} from '../../../app/store';
 import {tasksActions, todolistsActions} from '../index';
 
 
@@ -18,8 +18,9 @@ type PropsType = {
 
 export const Todolist = React.memo(function ({demo = false, ...props}: PropsType) {
     console.log('Todolist called')
-    const {fetchTasksTC, addTaskTC} = useActions(tasksActions)
+    const {fetchTasksTC} = useActions(tasksActions)
     const {removeTodolistTC, changeTodolistTitleTC, changeTodolistFilterAC} = useActions(todolistsActions)
+    const dispatch = useAppDispatch()
 
     useEffect(() => {
         if (demo) {
@@ -28,9 +29,21 @@ export const Todolist = React.memo(function ({demo = false, ...props}: PropsType
         fetchTasksTC(props.todolist.id)
     }, [demo, fetchTasksTC, props.todolist.id])
 
-    const addTaskCallback = useCallback((title: string) => {
-        addTaskTC({title, todolistId: props.todolist.id})
-    }, [addTaskTC, props.todolist.id])
+    const addTaskCallback = useCallback(async (title: string, helper: AddItemFormSubmitHelpersType) => {
+        let thunk = tasksActions.addTaskTC({title, todolistId: props.todolist.id})
+        const resultAction = await dispatch(thunk)
+
+        if (tasksActions.addTaskTC.rejected.match(resultAction)) {
+            if (resultAction.payload?.errors?.length) {
+                const errorMessage = resultAction.payload?.errors[0]
+                helper.setError(errorMessage)
+            } else {
+                helper.setError('Some error occured')
+            }
+        } else {
+            helper.setTitle('')
+        }
+    }, [dispatch, props.todolist.id])
 
     const removeTodolist = () => {
         removeTodolistTC(props.todolist.id)
@@ -62,11 +75,12 @@ export const Todolist = React.memo(function ({demo = false, ...props}: PropsType
     }
 
     return <Paper style={{position: 'relative', padding: '10px'}}>
-        <IconButton onClick={removeTodolist}
+        <IconButton size={'small'}
+                    onClick={removeTodolist}
                     disabled={props.todolist.entityStatus === 'loading'}
                     style={{position: 'absolute', right: '5px', top: '5px'}}
         >
-            <Delete/>
+            <Delete fontSize={'small'}/>
         </IconButton>
         <h3><EditableSpan value={props.todolist.title} onChange={changeTodolistTitle}/>
         </h3>
