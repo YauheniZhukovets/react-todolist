@@ -1,14 +1,8 @@
-import {
-    changeTodolistEntityStatusAC,
-    changeTodolistFilterAC,
-    FilterValuesType,
-    TodolistDomainType,
-    todolistsReducer
-} from './todolists-reducer'
+import {changeTodolistEntityStatusAC, changeTodolistFilterAC, FilterValuesType, TodolistDomainType} from './todolists-reducer'
 import {v1} from 'uuid'
-import {TodolistType} from '../../api/todolists-api'
-import {RequestStatusType} from '../../app/app-reducer'
-import {todolistsActions} from './index';
+import {RequestStatusType} from '../Application/application-reducer'
+import {todolistsActions, todolistsReducer} from './';
+import {TodolistType} from '../../api/types';
 
 let todolistId1: string
 let todolistId2: string
@@ -69,7 +63,7 @@ test('correct filter of todolist should be changed', () => {
 })
 test('todolists should be added', () => {
 
-    const action = todolistsActions.fetchTodolistsTC.fulfilled({todolists: startState}, 'requestId')
+    const action = todolistsActions.fetchTodolistsTC.fulfilled({todolists: startState}, 'requestId',undefined)
 
     const endState = todolistsReducer([], action)
 

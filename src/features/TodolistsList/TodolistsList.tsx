@@ -1,5 +1,4 @@
 import React, {useCallback, useEffect} from 'react'
-import {useActions, useAppDispatch, useAppSelector} from '../../app/store'
 import {Grid} from '@material-ui/core'
 import {AddItemForm, AddItemFormSubmitHelpersType} from '../../components/AddItemForm/AddItemForm'
 import {Todolist} from './Todolist/Todolist'
@@ -8,6 +7,7 @@ import {selectIsLoggedIn} from '../Auth/selectors';
 import {selectTodolists} from './Todolist/selectors';
 import {selectTasks} from './Todolist/Task/selectors';
 import {todolistsActions} from './index';
+import {useActions, useAppDispatch, useAppSelector} from '../../utils/redux-utils';
 
 
 type PropsType = {

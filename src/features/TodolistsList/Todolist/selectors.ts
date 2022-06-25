@@ -1,3 +1,3 @@
-import {AppRootStateType} from '../../../app/store';
+import {AppRootStateType} from '../../../utils/types';
 
 export const selectTodolists = (state: AppRootStateType) => state.todolists

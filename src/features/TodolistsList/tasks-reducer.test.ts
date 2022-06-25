@@ -1,6 +1,6 @@
-import { tasksReducer, TasksStateType} from './tasks-reducer'
-import {todolistsActions,tasksActions} from './index';
-import {TaskPriorities, TaskStatuses} from '../../api/todolists-api'
+import {TasksStateType} from './tasks-reducer'
+import {tasksActions, tasksReducer, todolistsActions} from './';
+import {TaskPriorities, TaskStatuses} from '../../api/types';
 
 let startState: TasksStateType = {};
 beforeEach(() => {
@@ -61,7 +61,10 @@ test('correct task should be added to correct array', () => {
         startDate: '',
         id: 'id exists'
     }
-    const action = tasksActions.addTaskTC.fulfilled({...task}, 'requestId', {title: task.title, todolistId: task.todoListId});
+    const action = tasksActions.addTaskTC.fulfilled({...task}, 'requestId', {
+        title: task.title,
+        todolistId: task.todoListId
+    });
 
     const endState = tasksReducer(startState, action)
 
@@ -128,7 +131,7 @@ test('empty arrays should be added when we set todolists', () => {
             {id: '1', title: 'title 1', order: 0, addedDate: ''},
             {id: '2', title: 'title 2', order: 0, addedDate: ''}
         ]
-    }, 'requestId')
+    }, 'requestId', undefined)
 
     const endState = tasksReducer({}, action)
 
