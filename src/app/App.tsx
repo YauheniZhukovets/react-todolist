@@ -19,11 +19,8 @@ import {authActions, authSelectors, Login} from '../features/Auth';
 import {selectIsInitialized, selectStatus} from './selectors';
 import {useActions, useAppSelector} from '../utils/redux-utils';
 
-type PropsType = {
-    demo?: boolean
-}
 
-function App({demo = false}: PropsType) {
+function App() {
     const status = useAppSelector(selectStatus)
     const isInitialized = useAppSelector(selectIsInitialized)
     const isLoggedIn = useAppSelector(authSelectors.selectIsLoggedIn)
@@ -32,10 +29,10 @@ function App({demo = false}: PropsType) {
     const {initializeApp} = useActions(appActions)
 
     useEffect(() => {
-        if (!demo) {
+        if (!isLoggedIn) {
             initializeApp()
         }
-    }, [demo, initializeApp])
+    }, [initializeApp, isLoggedIn])
 
     const logoutHandler = useCallback(() => {
         logout()
@@ -47,7 +44,6 @@ function App({demo = false}: PropsType) {
             <CircularProgress/>
         </div>
     }
-
     return (
         <div className="App">
             <ErrorSnackbar/>
@@ -64,7 +60,7 @@ function App({demo = false}: PropsType) {
                 {status === 'loading' && <LinearProgress/>}
             </AppBar>
             <Container fixed>
-                <Route exact path={'/'} render={() => <TodolistsList demo={demo}/>}/>
+                <Route exact path={'/'} render={() => <TodolistsList demo={false}/>}/>
                 <Route path={'/login'} render={() => <Login/>}/>
             </Container>
         </div>
