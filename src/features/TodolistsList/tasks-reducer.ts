@@ -7,11 +7,17 @@ import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import {AxiosError} from 'axios';
 import {asyncActions as asyncTodoActions} from './todolists-reducer';
 import {AppRootStateType, ThunkError} from '../../utils/types';
-import {TaskPriorities, TaskStatuses, TaskType, UpdateTaskModelType} from '../../api/types';
+import {
+    TaskPriorities,
+    TaskStatuses,
+    TaskType,
+    UpdateTaskModelType
+} from '../../api/types';
 import {setAppStatus} from '../CommonActtions/ApplicationCommonActions';
 
 
 const initialState: TasksStateType = {}
+
 export const slice = createSlice({
     name: 'tasks',
     initialState,
@@ -110,7 +116,7 @@ const updateTaskTC = createAsyncThunk('task/updateTask', async (param: { taskId:
         }
     } catch (err) {
         const error = err as AxiosError
-        return  handleAsyncServerNetworkError(error, thunkAPI);
+        return handleAsyncServerNetworkError(error, thunkAPI);
     }
 })
 

@@ -1,6 +1,9 @@
 import {todolistsAPI} from '../../api/todolists-api'
 import {RequestStatusType} from '../Application'
-import {handleAsyncServerAppError, handleAsyncServerNetworkError,} from '../../utils/error-utils'
+import {
+    handleAsyncServerAppError,
+    handleAsyncServerNetworkError,
+} from '../../utils/error-utils'
 import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {AxiosError} from 'axios';
 import {ThunkError} from '../../utils/types';
@@ -27,7 +30,11 @@ export const slice = createSlice({
     },
     extraReducers: (builder) => {
         builder.addCase(fetchTodolistsTC.fulfilled, (state, action) => {
-            return action.payload.todolists.map(tl => ({...tl, filter: 'all', entityStatus: 'idle'}))
+            return action.payload.todolists.map(tl => ({
+                ...tl,
+                filter: 'all',
+                entityStatus: 'idle'
+            }))
         })
         builder.addCase(removeTodolistTC.fulfilled, (state, action) => {
             const index = state.findIndex(tl => tl.id === action.payload.todolistId)
